@@ -1,0 +1,523 @@
+# Database Implementation in MYSQL
+
+#	Creating all the 11 tables 
+
+CREATE TABLE Customer
+( CustomerID INTEGER NOT NULL UNIQUE,
+ C_FName VARCHAR(20) NOT NULL,
+ C_LName VARCHAR(30) NOT NULL,
+ SeasonPassID INTEGER NULL,
+ CONSTRAINT CustomerID_PK PRIMARY KEY (CustomerID));
+
+CREATE TABLE SeasonPass
+( SeasonPassID INTEGER NOT NULL UNIQUE,
+ ExpirationDate DATE NOT NULL,
+ CustomerID INTEGER NOT NULL,
+ CONSTRAINT SeasonPassID_PK PRIMARY KEY (SeasonPassID),
+ CONSTRAINT CustomerID_FK FOREIGN KEY (CustomerID) REFERENCES
+Customer(CustomerID));
+
+ALTER TABLE Customer
+ADD CONSTRAINT SeasonPassID _FK FOREIGN KEY (SeasonPassID)
+REFERENCES SeasonPass (SeasonPassID);
+
+CREATE TABLE Team
+ ( TeamID INTEGER NOT NULL UNIQUE,
+  Team_Name VARCHAR(30) NOT NULL,
+  Coach_FName VARCHAR(20) NOT NULL,
+  Coach_LName VARCHAR(30) NOT NULL,
+  City VARCHAR(20) NOT NULL,
+  State VARCHAR(20) NOT NULL, 
+  CONSTRAINT TeamID_PK PRIMARY KEY (TeamID));
+
+CREATE TABLE Task
+( TaskID INTEGER NOT NULL UNIQUE,
+ Task_Name VARCHAR(30) NOT NULL,
+ CONSTRAINT TaskID_PK PRIMARY KEY (TaskID));
+
+CREATE TABLE Food
+(FoodItemID INTEGER NOT NULL UNIQUE,
+ Food_Name VARCHAR(15) NOT NULL,
+ Food_Type VARCHAR(15) NOT NULL,
+ Food_Price FLOAT(5,2) NOT NULL,
+ CONSTRAINT FoodItemID_PK PRIMARY KEY (FoodItemID));
+
+CREATE TABLE Event
+( EventID INTEGER NOT NULL UNIQUE,
+ Event_DateTime DATETIME NOT NULL,
+ SportType VARCHAR(20) NOT NULL,
+ SeatsAvailable INTEGER NOT NULL,
+ HomeTeamID INTEGER NOT NULL,
+ VisitorTeamID INTEGER NOT NULL,
+ CONSTRAINT EventID_PK PRIMARY KEY (EventID),
+ CONSTRAINT HomeTeamID_FK1 FOREIGN KEY (HomeTeamID) REFERENCES
+Team(TeamID),
+ CONSTRAINT VisitorTeamID_FK2 FOREIGN KEY (VisitorTeamID)
+REFERENCES Team(TeamID));
+
+CREATE TABLE  Attendance
+( TicketNumber INTEGER NOT NULL UNIQUE,
+ CustomerID INTEGER NOT NULL,
+ EventID INTEGER NOT NULL,
+ Ticket_Price FLOAT(5,2) NOT NULL,
+ CONSTRAINT TicketNumber_PK PRIMARY KEY (TicketNumber),
+ CONSTRAINT CustomerID_FK1 FOREIGN KEY (CustomerID) REFERENCES
+Customer(CustomerID),
+ CONSTRAINT EventID_FK2 FOREIGN KEY (EventID) REFERENCES
+SportEvent (EventID));
+
+CREATE TABLE Department
+( DepartmentID INTEGER NOT NULL UNIQUE,
+ Dept_Name VARCHAR(30) NOT NULL,
+ ManagerID INTEGER NOT NULL,
+ CONSTRAINT DepartmentID_PK PRIMARY KEY (DepartmentID));
+
+CREATE TABLE Employee
+( EmployeeID INTEGER NOT NULL UNIQUE,
+ E_FName VARCHAR(20) NOT NULL, 
+ E_LName VARCHAR(30) NOT NULL,
+ E_HireDate DATE NOT NULL,
+ E_BirthDate DATE NOT NULL,
+ E_Salary FLOAT(8,2) NOT NULL,
+ DepartmentID INTEGER NOT NULL,
+ CONSTRAINT EmployeeID_PK PRIMARY KEY (EmployeeID),
+ CONSTRAINT DepartmentID_FK FOREIGN KEY (DepartmentID)
+REFERENCES Department(DepartmentID));
+
+ALTER TABLE Department
+ADD CONSTRAINT ManagerID_FK FOREIGN KEY (ManagerID) REFERENCES
+Employee(EmployeeID);
+
+CREATE TABLE FoodOrders
+( OrderID INTEGER NOT NULL UNIQUE,
+ FoodItemID INTEGER NOT NULL,
+ EmployeeID INTEGER NOT NULL,
+ F_DateTime DATETIME NOT NULL,
+ CustomerID INTEGER NOT NULL,
+ Quantity INTEGER NOT NULL,
+ CONSTRAINT OrderID_PK PRIMARY KEY (OrderID),
+ CONSTRAINT FoodItemID_FK1 FOREIGN KEY (FoodItemID) REFERENCES
+Food(FoodItemID),
+ CONSTRAINT EmployeeID_FK2 FOREIGN KEY (EmployeeID) REFERENCES
+Employee(EmployeeID),
+ CONSTRAINT CustomerID_FK3 FOREIGN KEY (CustomerID) REFERENCES
+Customer(CustomerID));
+
+CREATE TABLE TaskAssignment
+( TaskAssgn_ID INTEGER NOT NULL UNIQUE,
+ EmployeeID INTEGER NOT NULL,
+ TaskID INTEGER NOT NULL,
+ TA_DateTime DATETIME NOT NULL,
+ CONSTRAINT TaskAssgn_ID_PK PRIMARY KEY (TaskAssgn_ID),
+ CONSTRAINT EmployeeID_FK1 FOREIGN KEY (EmployeeID) REFERENCES
+Employee(EmployeeID),
+ CONSTRAINT TaskID_FK2 FOREIGN KEY (TaskID) REFERENCES
+Task(TaskID));
+
+
+# Insert values in the 11 created tables
+#Insert values in the customer table.
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (3456789123, "Shahad", "AlGhamdi"); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (9876543210, "Nouf", "AlQahtani"); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (1234567890, "Salma", "Alarefi"); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (8765432109, "Sama", "AlGhamdi"); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (2345678910, "Azzah", " Dahbashi "); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (9012345678, "Noor", " Nadim "); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (5678901234, " Waad ", " Alarefi "); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (4321098765, " Malak ", " Nadim "); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (7890123456, " Wedad ", " Nadim "); 
+INSERT INTO Customer ( CustomerID, C_FName, C_LName) VALUES (2109876543, " Adhadri ", " Dahbashi "); 
+
+#Insert values in the SeasonPass table.
+
+INSERT INTO SeasonPass ( SeasonPassID, ExpirationDate, CustomerID) VALUES (8245196, 15/01/2024,3456789123);
+
+INSERT INTO SeasonPass ( SeasonPassID, ExpirationDate, CustomerID) VALUES (3628749, 27/03/2023, 8765432109);
+
+INSERT INTO SeasonPass ( SeasonPassID, ExpirationDate, CustomerID) VALUES (9576132, 6/12/2025, 4321098765);
+
+INSERT INTO SeasonPass ( SeasonPassID, ExpirationDate, CustomerID) VALUES (4682157, 22/11/2023, 2109876543);
+ 
+INSERT INTO SeasonPass ( SeasonPassID, ExpirationDate, CustomerID) VALUES (5739268, 3/01/2022, 7890123456); 
+
+
+#Insert values in the team table.
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State) VALUES ( 8569372 , "Alhilal" , " Jorge" , " Jesus" , " Riyadh ","Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES (4921856 , "Alettihad" , "Nuno" , "Santo" , "Jeddah", "Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES ( 7210468, "Alahli" , "Matthias" , "Jaissle" , "Jeddah", "Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES (4679891 , "Alnssr" , "Luis" , "Castro" , "Riyadh","Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES (5836192, " Alshabab" , "Marcel" , "Keizer" , "Riyadh","Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State) VALUES (9648203 , "Alwehda" , "Georgios", " Donis", "Makkah","Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES (3075849, "Alfayhaa" , "Vuk" , "Rasovic" , "Almajmaah","Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES (1753968 , "Alfateh" , "Slaven" , " Bilić" , "Alahsa","Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES (6492810, "Alettifaq" , "Steven", "Gerrard" , "Dammam","Saudi Arabia");
+
+INSERT INTO Team (TeamID , Team_Name , Coach_FName , Coach_LName , City,State ) VALUES ( 8320475, "AlTaawoun" , "Péricles" , "Chamusc" , "Buraidah","Saudi Arabia");
+
+
+
+
+
+
+
+
+#Insert values in the task table. 
+
+INSERT INTO Task (TaskID, Task_Name) VALUES (8742603, ' Analyze');
+INSERT INTO Task (TaskID, Task_Name) VALUES (5921784, ' Strategize');
+INSERT INTO Task (TaskID, Task_Name) VALUES (3098276, ' Research');
+INSERT INTO Task (TaskID, Task_Name) VALUES (4689152, ' Design');
+INSERT INTO Task (TaskID, Task_Name) VALUES ( 6250478, ' Implement');
+INSERT INTO Task (TaskID, Task_Name) VALUES (1836920, ‘Optimize’);
+INSERT INTO Task (TaskID, Task_Name) VALUES (9574031, ‘Develop’);
+INSERT INTO Task (TaskID, Task_Name) VALUES (2063189,’ Generate’);
+INSERT INTO Task (TaskID, Task_Name) VALUES (3847592, ‘Coordinate’);
+
+#Insert values in the food table.
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (1234567, " Cheesy Pizza", " Italian", 12.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (2345678, " Spicy Tacos", " Mexican", 8.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (3456789, " Sushi Rolls", " Japanese",15.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (4567890, " Chicken Biryani", " Indian ", 10.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (5678901, " Grilled Salmon", " Seafood ", 18.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (6789012, " Caesar Salad", " Salad ", 7.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (7890123, " Beef Burger", " American", 9.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (8901234, " Pad Thai", " Thai", 11.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (9012345, " Kabsa", "Saudi", 10.99);
+INSERT INTO Food ( FoodItemID, Food_Name, Food_Type, Food_Price) VALUES (0123456, " Chicken Shawarma", " Syrian ", 7.99);
+
+
+
+
+
+
+#Insert values in the Event table
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (9876543, '2023-12-15 18:30:00', 'Basketball', 500, 123456, 789012);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (8765432, '2024-01-20 19:00:00', 'Soccer', 1000, 234567, 890123); 
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (7654321, '2023-12-02 14:00:00', 'Tennis', 200, 345678, 901234);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (6543210, '2024-02-05 20:45:00', 'Football', 1500, 456789, 012345);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (5432109, '2023-11-28 17:30:00', 'Baseball', 800, 567890, 123456);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (4321098, '2024-03-10 16:15:00', 'Volleyball', 300, 678901, 234567);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (3210987, '2023-12-07 21:00:00', 'Golf', 50, 789012, 345678);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (2109876, '2024-04-15 14:30:00', 'Cricket', 1000, 890123, 456789);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (1098765, '2023-11-30 18:00:00', 'Rugby', 700, 901234, 567890);
+
+INSERT INTO SportEvent (EventID, Event_DateTime, SportType, SeatsAvailable, HomeTeamID, VisitorTeamID)
+VALUES (9876543, '2024-05-20 19:30:00', 'Hockey', 400, 012345, 678901);
+
+
+#Insert the Attendance table.
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000001, 1156789760, 2233445, 250.00); 
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000002, 1105432109, 1122334, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000003, 1117983122, 3344556, 200.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000004, 1109786523, 4455667, 250.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000005, 1014432355, 5566778, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000006, 1197615431, 6677889, 150.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000007, 1119823753, 7788991, 200.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000008, 1154279856, 8899101, 250.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000009, 1011398654, 9910101, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000010, 1118106523, 1010112, 150.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000011, 1156789760, 2233445, 200.00);
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000012, 1105432109, 1122334, 250.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000013, 1117983122, 3344556, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000014, 1109786523, 4455667, 150.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000015, 1014432355, 5566778, 200.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000016, 1197615431, 6677889, 250.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000017, 1119823753, 7788991, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, 
+Ticket_Price) VALUES (4000018, 1154279856, 8899101, 150.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000019, 1011398654, 9910101, 200.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000020, 1118106523, 1010112, 250.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000021, 1156789760, 2233445, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000022, 1105432109, 1122334, 150.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000023, 1117983122, 3344556, 200.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000024, 1109786523, 4455667, 250.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000025, 1014432355, 5566778, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000025, 1014432355, 5566778, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000026, 1197615431, 6677889, 150.00);
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000027, 1119823753, 7788991, 200.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000028, 1154279856, 8899101, 250.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000029, 1011398654, 9910101, 100.00);
+
+INSERT INTO ATTENDANCE (TicketNumber, CustomerID, EventID, Ticket_Price) VALUES (4000030, 1118106523, 1010112, 150.00);
+
+
+#Insert values in the Department table.
+
+INSERT INTO DEPARTMENT (DepartmentID, Dept_Name, ManagerID) VALUES  (3001234, 'HR', 1991234);
+
+INSERT INTO DEPARTMENT (DepartmentID, Dept_Name, ManagerID) VALUES (3002345, 'Finance', 1992345);
+
+INSERT INTO DEPARTMENT (DepartmentID, Dept_Name, ManagerID) VALUES (3003456, 'Marketing', 1993456);
+
+INSERT INTO DEPARTMENT (DepartmentID, Dept_Name, ManagerID) VALUES (3004567, 'Operations', 1994567);
+
+INSERT INTO DEPARTMENT (DepartmentID, Dept_Name, ManagerID) VALUES (3005678, 'IT', 1995678);
+
+
+
+#Insert values in the Employee table.
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1991234, 'John', 'Doe', 15000.00, '1990-08-15', '2018-03-20', 3001234);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1992345, 'Jane', 'Smith', 12000.00, '1988-05-10', '2015-09-05', 3002345);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1993456, 'Michael', 'Johnson', 18000.00, '1992-11-25', '2017-07-12', 3003456);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1994567, 'Emily', 'Williams', 13000.00, '1995-03-18', '2016-02-01', 3004567);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1995678, 'David', 'Brown', 16000.00, '1987-09-08', '2014-11-10', 3005678);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1996789, 'Sarah', 'Wilson', 14000.00, '1993-02-22', '2019-06-15', 3001234);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1997891, 'Daniel', 'Taylor', 17000.00, '1991-07-06', '2013-04-18', 3002345);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1998912, 'Olivia', 'Miller', 19000.00, '1989-01-12', '2020-09-30', 3003456);
+
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1999123, 'James', 'Anderson', 12500.00, '1994-06-28', '2016-08-05', 3004567);
+INSERT INTO EMPLOYEE (EmployeeID, E_FName, E_LName, E_Salary, E_BirthDate, E_HireDate, DepartmentID)
+VALUES (1990123, 'Sophia', 'Clark', 15500.00, '1997-03-14', '2015-12-22', 3005678);
+
+#Insert values in the FoodOreders table.
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001234, 1991234, 1105432109, 9001234, '2023-11-27 10:15:00', 5);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity) 
+VALUES (5002345, 1992345, 1156789760, 9002345, '2023-11-27 13:30:00', 20);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5003456, 1993456, 1117983122, 9003456, '2023-11-27 17:45:00', 15);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5004567, 1994567, 1109786523, 9004567, '2023-11-27 09:00:00', 40);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5005678, 1995678, 1014432355, 9005678, '2023-11-27 12:15:00', 30);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5006789, 1996789, 1197615431, 9006789, '2023-11-27 15:30:00', 25);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5007891, 1997891, 1119823753, 9007890, '2023-11-27 18:45:00', 35);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity) 
+VALUES (5008912, 1998912, 1154279856, 9008901, '2023-11-27 11:00:00', 10);
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5009123, 1999123, 1011398654, 9009012, '2023-11-27 14:15:00', 25);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001012, 1990123, 1118106523, 9000123, '2023-11-27 17:30:00', 15);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001023, 1991234, 1105432109, 9001234, '2023-11-27 10:45:00', 50);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001034, 1992345, 1156789760, 9002345, '2023-11-27 14:00:00', 20);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001045, 1993456, 1105432109, 9003456, '2023-11-27 17:15:00', 60);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001056, 1994567, 1156789760, 9004567, '2023-11-27 10:30:00', 15); 
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001067, 1995678, 1117983122, 9005678, '2023-11-27 13:45:00', 20);
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001078, 1996789, 1109786523, 9006789, '2023-11-27 16:00:00', 17);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001078, 1996789, 1109786523, 9006789, '2023-11-27 16:00:00', 30); 
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001089, 1997891, 1014432355, 9007890, '2023-11-27 19:15:00', 40);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001100, 1998912, 1197615431, 9008901, '2023-11-27 12:30:00', 10);
+
+INSERT INTO FoodOrders (OrderID, EmployeeID, CustomerID, FoodItemID, F_DateTime, Quantity)
+VALUES (5001111, 1999123, 1119823753, 9009012, '2023-11-27 15:45:00', 15);
+
+
+
+
+#Insert values in the TaskAssignment table.
+
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100002, 1993456, 1567890, '2020-07-23');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100003, 1994567, 1678901, '2020-07-24');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100004, 1995678, 1789012, '2020-07-25');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100005, 1996789, 1890123, '2020-07-26');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100006, 1997891, 1901234, '2020-07-27');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100007, 1998912, 1123456, '2020-07-28');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100008, 1999123, 1234567, '2020-07-29');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100009, 1990123, 1345678, '2020-07-30');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100010, 1991234, 1456789, '2020-07-31');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100011, 1992345, 1567890, '2020-08-01');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100013, 1993456, 1678901, '2020-08-02');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100014, 1994567, 1789012, '2020-08-03');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100015, 1995678, 1890123, '2020-08-04');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100016, 1996789, 1901234, '2020-08-05');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100017, 1997891, 1123456, '2020-08-06');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100018, 1998912, 1234567, '2020-08-07');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100019, 1999123, 1345678, '2020-08-08');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100020, 1990123, 1456789, '2020-08-09');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100021, 1991234, 1567890, '2020-08-10');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100022, 1992345, 1678901, '2020-08-11');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100023, 1993456, 1789012, '2020-08-12');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100024, 1994567, 1890123, '2020-08-13');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100025, 1995678, 1901234, '2020-08-130');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100025, 1995678, 1901234, '2020-08-13');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100026, 1996789, 1123456, '2020-08-14');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100027, 1997891, 1234567, '2020-08-15');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100028, 1998912, 1345678, '2020-08-16');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100029, 1999123, 1456789, '2020-08-17');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100030, 1990123, 1567890, '2020-08-18');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100031, 1991234, 1678901, '2020-08-19');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100032, 1992345, 1789012, '2020-08-20');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100033, 1993456, 1890123, '2020-08-21');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100034, 1994567, 1901234, '2020-08-22'); 
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100035, 1995678, 1123456, '2020-08-23');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100036, 1996789, 1234567, '2020-08-24');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100037, 1997891, 1345678, '2020-08-25');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100038, 1998912, 1456789, '2020-08-26');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100039, 1999123, 1567890, '2020-08-27');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100040, 1990123, 1678901, '2020-08-28');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100041, 1991234, 1789012, '2020-08-29');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100042, 1992345, 1890123, '2020-08-30');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100043, 1993456, 1901234, '2020-08-31');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100044, 1994567, 1123456, '2020-09-01'); 
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100045, 1995678, 1234567, '2020-09-02');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100046, 1996789, 1345678, '2020-09-03');
+INSERT INTO TaskAssignment (TaskAssgn_ID, EmployeeID, TaskID, TA_DateTime) VALUES (7100047, 1997891, 1456789, '2020-09-01);
+
+
+#Querying in MySQL
+
+#Average ticket price per customer
+SELECT c.CustomerID, AVG(t.TicketPrice) AS AverageTicketPrice
+FROM Customers c
+INNER JOIN Tickets t ON c.CustomerID = t.CustomerID
+GROUP BY c.CustomerID
+HAVING COUNT(t.TicketID) > 1
+ORDER BY AverageTicketPrice DESC;
+
+#Employees for Layoff
+SELECT CONCAT(e.FirstName, ' ', e.LastName) AS FullName,
+       d.DepartmentName, e.HireDate
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentID = d.DepartmentID
+ORDER BY e.HireDate;
+
+#Foods ordered on March 17th, 2023
+SELECT f.FoodName, SUM(of.Quantity) AS TotalQuantity,
+       SUM(of.Quantity * f.Price) AS TotalSales
+FROM FoodOrders of
+INNER JOIN Foods f ON of.FoodID = f.FoodID
+WHERE of.OrderDate = '2023-03-17'
+GROUP BY f.FoodID
+ORDER BY TotalQuantity DESC;
+
+#Season-Pass holders
+SELECT sp.SeasonPassID, CONCAT(c.FirstName, ' ', c.LastName) AS FullName,
+       sp.ExpirationDate, COUNT(t.TicketID) AS AttendedEvents
+FROM SeasonPasses sp
+INNER JOIN Customers c ON sp.CustomerID = c.CustomerID
+LEFT JOIN Tickets t ON sp.CustomerID = t.CustomerID
+GROUP BY sp.SeasonPassID
+ORDER BY sp.ExpirationDate;
+
+#Top employees with highest food sales in 2019
+SELECT e.EmployeeID, CONCAT(e.FirstName, ' ', e.LastName) AS FullName,
+       SUM(of.Quantity) AS TotalQuantityOrdered
+FROM Employees e
+INNER JOIN Orders o ON e.EmployeeID = o.EmployeeID
+INNER JOIN OrderFoods of ON o.OrderID = of.OrderID
+WHERE YEAR(o.OrderDate) = 2019
+GROUP BY e.EmployeeID
+HAVING TotalQuantityOrdered >= 10
+ORDER BY TotalQuantityOrdered DESC;
+
+#Events with available seats
+SELECT e.EventName, s.SportType, e.EventDate, e.AvailableSeats
+FROM Events e
+INNER JOIN Sports s ON e.SportID = s.SportID
+WHERE s.SportType LIKE 'T%' AND e.AvailableSeats > 0
+ORDER BY s.SportType;
+
+
+#Salary increase for long-term employees
+UPDATE Employees
+SET Salary = Salary + 500
+WHERE HireDate = '2013-11-01';
+
+SELECT EmployeeID, CONCAT(FirstName, ' ', LastName) AS FullName,
+       HireDate, Salary - 500 AS PreviousSalary, Salary AS NewSalary
+FROM Employees
+WHERE HireDate = '2013-11-01';
+
+
+#Delete all season-pass data
+DELETE FROM SeasonPasses;
